@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random GIF Audio Player</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f396e0;
+            position: relative;
+            font-family: Arial Narrow, sans-serif;
+        }
+
+        .header {
+            width: 100%;
+            background-color: transparent;
+            color: rgb(0, 0, 0);
+            text-align: left;
+            top: 0;
+            left: 0;
+        }
+
+        .buttons {
+            margin-top: 0px;
+        }
+
+        .buttons button {
+            font-family: Arial Narrow, sans-serif;
+            background-color: #eb69ae;
+            color: rgb(0, 0, 0);
+            border: none;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .buttons button:hover {
+            background-color: #ff4500;
+        }
+
+        .gif {
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        audio {
+            display: none; /* Hide audio controls */
+        }
+
+        /* Add some spacing for the content below the header */
+        .content {
+            margin: 100px;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+
+        .modal-content {
+            background-color: #222;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover, .close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .album {
+            margin-bottom: 20px;
+        }
+
+        .album img {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px;
+            float: left;
+        }
+
+        .album h2 {
+            font-size: 24px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .album p {
+            margin: 5px 0;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header section with text and buttons -->
+    <div class="header">
+        <h1>Raisosonika is stinky-poppyhead group of blazingly gullible dawgs that forgot to piss one evening and committed arson attack on neighbour cat</h1>
+        <div class="buttons">
+            <button id="albumsBtn">Albums</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- GIF elements -->
+        <img class="gif" id="gif1" src="/Users/nazarg./Desktop/karolis web/icon_blk.gif" alt="Audio GIF 1" width="150">
+        <img class="gif" id="gif2" src="/Users/nazarg./Desktop/karolis web/icon2.gif" alt="Audio GIF 2" width="150">
+        <img class="gif" id="gif3" src="/Users/nazarg./Desktop/karolis web/icon3.gif" alt="Audio GIF 3" width="150">
+
+        <!-- Audio elements -->
+        <audio id="audio1">
+            <source src="/Users/nazarg./Desktop/karolis web/88 wicked beat draft.wav" type="audio/mp3">
+        </audio>
+
+        <audio id="audio2">
+            <source src="/Users/nazarg./Desktop/karolis web/88 wicked beat draft.wav" type="audio/mp3">
+        </audio>
+
+        <audio id="audio3">
+            <source src="/Users/nazarg./Desktop/karolis web/88 wicked beat draft.wav" type="audio/mp3">
+        </audio>
+    </div>
+
+    <!-- Modal for albums -->
+    <div id="albumsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="album">
+                <img src="/Users/nazarg./Desktop/karolis web/img1.jpeg" alt="Album 1 Cover">
+                <h2><a href="/Users/nazarg./Desktop/karolis web/img1.jpeg" target="_blank">Album 1 Title</a></h2>
+                <p>Description of Album 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <div class="clear"></div>
+            </div>
+            <div class="album">
+                <img src="/Users/nazarg./Desktop/karolis web/img2.jpeg" alt="Album 1 Cover">
+                <h2><a href="/Users/nazarg./Desktop/karolis web/img2.jpeg" target="_blank">Album 1 Title</a></h2>
+                <p>Description of Album 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <div class="clear"></div>
+            </div>
+            <div class="album">
+                <img src="/path/to/album3.jpg" alt="Album 3 Cover">
+                <h2><a href="https://example.com/album3" target="_blank">Album 3 Title</a></h2>
+                <p>Description of Album 3. Aliquam erat volutpat. Vestibulum ante ipsum primis in faucibus.</p>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gifs = document.querySelectorAll('.gif');
+        const audios = [document.getElementById('audio1'), document.getElementById('audio2'), document.getElementById('audio3')];
+
+        // Function to set random position for each GIF
+        function randomizeGifs() {
+            gifs.forEach((gif, index) => {
+                const randomX = Math.random() * (window.innerWidth - gif.width);
+                const randomY = Math.random() * (window.innerHeight - gif.height);
+                const randomScale = Math.random() * 1.5 + 0.5;  // Random scale between 0.5x and 2x
+
+                gif.style.transform = `scale(${randomScale})`;
+                gif.style.left = `${randomX}px`;
+                gif.style.top = `${randomY}px`;
+
+                // Add click event listener to play/pause the associated audio
+                gif.addEventListener('click', () => {
+                    const audio = audios[index];
+                    if (audio.paused) {
+                        audio.play();
+                    } else {
+                        audio.pause();
+                    }
+                });
+            });
+        }
+
+        // Randomize GIF positions on load
+        window.onload = randomizeGifs;
+
+        // Modal functionality
+        const modal = document.getElementById("albumsModal");
+        const btn = document.getElementById("albumsBtn");
+        const span = document.getElementsByClassName("close")[0];
+
+        // Open the modal when the "Albums" button is clicked
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // Close the modal when the close (x) is clicked
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Close the modal if the user clicks outside of it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Shop button (optional functionality)
+        document.getElementById('shopBtn').addEventListener('click', function() {
+            alert('Shop section clicked!');
+        });
+
+        
+    </script>
+
+</body>
+</html>
