@@ -237,3 +237,82 @@
 
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Wave Visualizer</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #282c34;
+            margin: 20px 0;
+        }
+        #visualizer {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>3D Wave Visualizer</h1>
+    <div id="visualizer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Basic scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('visualizer').appendChild(renderer.domElement);
+        
+        const geometry = new THREE.PlaneGeometry(10, 10, 32, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0x0077ff, wireframe: true });
+        const plane = new THREE.Mesh(geometry, material);
+        plane.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
+        scene.add(plane);
+        
+        camera.position.z = 5;
+
+        function animateWave() {
+            const time = Date.now() * 0.002;
+            const positions = plane.geometry.attributes.position.array;
+            const size = plane.geometry.attributes.position.count;
+
+            for (let i = 0; i < size; i++) {
+                const x = i % 33; // 32 segments
+                const z = Math.floor(i / 33);
+                positions[i * 3 + 1] = Math.sin((x + time) * 0.5) * Math.cos((z + time) * 0.5);
+            }
+
+            plane.geometry.attributes.position.needsUpdate = true; // Inform Three.js that the position data has changed
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            animateWave();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
